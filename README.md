@@ -64,6 +64,42 @@ How to debug POD (here you will get all information about POD & if any error) -
 to see logs thrown by POD -
 $ kubectl logs nginx
 
+# Deployment
+
+https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+copy deployment & create deployment.yml -
+
+<img width="486" height="48" alt="image" src="https://github.com/user-attachments/assets/379f0136-8d91-44fa-9b0b-ee89e0c44d99" />
+
+
+<img width="634" height="213" alt="image" src="https://github.com/user-attachments/assets/79875ada-2146-4831-8d56-e6a57f82c9c2" />
+
+
+watching pods with live status -
+
+<img width="657" height="108" alt="image" src="https://github.com/user-attachments/assets/2ecf8f4b-626c-4bcb-8cfa-143d01511112" />
+
+Delete the POD -
+
+<img width="674" height="42" alt="image" src="https://github.com/user-attachments/assets/d64a92b6-1c78-439b-a90d-8af7426cdf54" />
+
+Once the pod is deleted, a new pod is created automatically -
+
+<img width="765" height="286" alt="image" src="https://github.com/user-attachments/assets/8d6bb1f5-d252-4df0-b3b8-f006e9b1f213" />
+
+After sometime, you can see, pod is created -
+
+<img width="755" height="279" alt="image" src="https://github.com/user-attachments/assets/e3da602f-819d-421a-b23b-418cbff0aade" />
+
+
+
+
+
+
+
+
+
 
 
 
