@@ -52,6 +52,22 @@ curl the node IP & you will see it has started running -
 
 https://kubernetes.io/de/docs/reference/kubectl/cheatsheet/
 
+Delete POD -
+
+<img width="849" height="121" alt="image" src="https://github.com/user-attachments/assets/8f6eaa99-c336-46bc-adc9-bb12f79e6a4b" />
+
+How to debug POD (here you will get all information about POD & if any error) -
+
+<img width="851" height="958" alt="image" src="https://github.com/user-attachments/assets/a36e19dc-9f99-4340-8c8c-3e0e4c0ef1c5" />
+<img width="861" height="182" alt="image" src="https://github.com/user-attachments/assets/387ed269-5d47-40ea-84e5-942d505948b7" />
+
+to see logs thrown by POD -
+$ kubectl logs nginx
+
+
+
+
+
 
 
 
