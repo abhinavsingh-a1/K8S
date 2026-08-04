@@ -48,7 +48,9 @@ curl the node IP & you will see it has started running -
 
 <img width="694" height="522" alt="image" src="https://github.com/user-attachments/assets/44a45e9f-7e52-4426-a4e2-8576bb532162" />
 
+# KUBECTL CHEATSHEET
 
+https://kubernetes.io/de/docs/reference/kubectl/cheatsheet/
 
 
 
