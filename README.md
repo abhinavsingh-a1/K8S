@@ -92,7 +92,15 @@ After sometime, you can see, pod is created -
 
 <img width="755" height="279" alt="image" src="https://github.com/user-attachments/assets/e3da602f-819d-421a-b23b-418cbff0aade" />
 
-# SERVICE
+Check Cluster Status -
+
+<img width="390" height="142" alt="image" src="https://github.com/user-attachments/assets/98e9c42c-e326-4c6a-b285-f30847ad8fbc" />
+
+Remove all PODs and deployment except kubectl default service -
+
+<img width="701" height="202" alt="image" src="https://github.com/user-attachments/assets/fc841021-7bc9-46ea-88f8-453a46cb7c5d" />
+
+
 
 
 
