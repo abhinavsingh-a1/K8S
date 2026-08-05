@@ -101,6 +101,9 @@ Remove all PODs and deployment except kubectl default service -
 <img width="701" height="202" alt="image" src="https://github.com/user-attachments/assets/fc841021-7bc9-46ea-88f8-453a46cb7c5d" />
 
 
+# LOGIN to DOCKERHUB
+
+<img width="716" height="160" alt="image" src="https://github.com/user-attachments/assets/cb50d6d4-505b-4ee6-b7d4-32eff02f54cc" />
 
 
 
