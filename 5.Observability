@@ -13,7 +13,7 @@ Tracing shows how it is happening.
 
 # Prometheus Architecture
 
-![description](image/pro.png)
+![image alt] (image/pro.png)
 
 ### 🔥 Prometheus Server
 - Prometheus server is the core of the monitoring system. It is responsible for scraping metrics from various configured targets, storing them in its time-series database (TSDB), and serving queries through its HTTP API.
