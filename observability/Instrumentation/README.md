@@ -181,8 +181,8 @@ docker build -t <<NAME_OF_YOUR_REPO>>:<<TAG>> application/service-a/
 docker build -t <<NAME_OF_YOUR_REPO>>:<<TAG>> application/service-b/ 
 
 or use the pre-built images
-- abhishekf5/demoservice-a:v
-- abhishekf5/demoservice-b:v
+- a1abhinavsingh/demoservice-a:v
+- a1abhinavsingh/demoservice-b:v
 
 ```
 
