@@ -82,6 +82,18 @@ Now lets see the metrics such as http_requests_total is working on prometheus an
 
 It is not giging anything because till now service discovery is not enabled. So we have created the prometheus stack but how PROMETHEUS know from which application it has to fetch the cutomer metrics from.
 
+For Service Descovery we have manifest in alerts-alertmanager-servicemonitoring-manifest folder. Just create those.
+
+$ kubectl apply -k alerts-alertmanager-servicemonitoring-manifest/
+
+<img width="868" height="99" alt="image" src="https://github.com/user-attachments/assets/8a5cc097-20bf-4369-8a5b-0072efc266df" />
+
+Lets look in to PROMETHEUS -
+
+<img width="1303" height="880" alt="image" src="https://github.com/user-attachments/assets/15f099b9-893f-4196-a00d-23c7904e5f59" />
+
+
+
 
 
 
