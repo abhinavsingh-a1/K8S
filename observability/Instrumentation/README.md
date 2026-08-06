@@ -65,6 +65,20 @@ $ kubectl get svc -n dev
 
 Service A is communicating with Service B internally.
 
+In service external IP will appear in some time. Hit that URL in browser and application will start running-
+
+<img width="1008" height="369" alt="image" src="https://github.com/user-attachments/assets/d6e6c662-9740-45d2-962c-97495f744128" />
+
+It supports many API like -
+/healthy
+/logs
+etc.
+
+<img width="1040" height="297" alt="image" src="https://github.com/user-attachments/assets/58d3f0ca-6af1-4132-819c-e4ab3cab09cb" />
+
+
+
+
 
 
 
