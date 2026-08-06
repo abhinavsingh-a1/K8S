@@ -1,26 +1,3 @@
-
-Below file has explanation of all metrics >>
-
-Instrumentation >> application >> Service-a >> index.js ==>>
-
-// Prometheus metrics
-Counter ==>>    name: 'http_requests_total', <br />
-                Desc : 'Total number of HTTP requests'<br /><br />
-
-Histogram ==>>  name: 'http_request_duration_seconds', <br />
-                Desc: 'Duration of HTTP requests in seconds',<br />
-                buckets: [0.1, 0.5, 1, 5, 10] // Buckets for the histogram in seconds<br /><br />
-
-Summary ==>>    name: 'http_request_duration_summary_seconds', <br />
-                Desc: 'Summary of the duration of HTTP requests in seconds',<br />
-                percentiles: [0.5, 0.9, 0.99] // Define your percentiles here<br /><br />
-
-// Gauge metric<br />
-Gauge ==>>      name: 'node_gauge_example', <br />
-                Desc: 'Example of a gauge tracking async task duration'<br /><br /><br /><br /><br />
-
-
-
 Navigate to service-a directory. Login to Docker -
 
 <img width="1200" height="203" alt="image" src="https://github.com/user-attachments/assets/c52f2a99-f587-40bf-82d9-8bac6b5b7e6d" />
@@ -184,6 +161,29 @@ Lets look in to PROMETHEUS -
 - `/example`: Tracks async task duration with a gauge.
 - `/metrics`: Exposes Prometheus metrics endpoint.
 - `/call-service-b`: To call service b & receive data from service b
+
+  --------------------------------------------------------------
+  Below file has explanation of all metrics >>
+
+Instrumentation >> application >> Service-a >> index.js ==>>
+
+// Prometheus metrics
+Counter ==>>    name: 'http_requests_total', <br />
+                Desc : 'Total number of HTTP requests'<br /><br />
+
+Histogram ==>>  name: 'http_request_duration_seconds', <br />
+                Desc: 'Duration of HTTP requests in seconds',<br />
+                buckets: [0.1, 0.5, 1, 5, 10] // Buckets for the histogram in seconds<br /><br />
+
+Summary ==>>    name: 'http_request_duration_summary_seconds', <br />
+                Desc: 'Summary of the duration of HTTP requests in seconds',<br />
+                percentiles: [0.5, 0.9, 0.99] // Define your percentiles here<br /><br />
+
+// Gauge metric<br />
+Gauge ==>>      name: 'node_gauge_example', <br />
+                Desc: 'Example of a gauge tracking async task duration'<br /><br /><br /><br /><br />
+--------------------------------------------------------------
+
 
 ## 2) dockerize & push it to the registry
 - To containerize the applications and push it to your Docker registry, run the following commands:
