@@ -5,21 +5,19 @@ Instrumentation >> application >> Service-a >> index.js ==>>
 
 // Prometheus metrics
 Counter ==>>    name: 'http_requests_total', <br />
-                Desc : 'Total number of HTTP requests'
+                Desc : 'Total number of HTTP requests'<br /><br />
 
-Histogram ==>>  name: 'http_request_duration_seconds', 
-                Desc: 'Duration of HTTP requests in seconds',
-                buckets: [0.1, 0.5, 1, 5, 10] // Buckets for the histogram in seconds
+Histogram ==>>  name: 'http_request_duration_seconds', <br />
+                Desc: 'Duration of HTTP requests in seconds',<br />
+                buckets: [0.1, 0.5, 1, 5, 10] // Buckets for the histogram in seconds<br /><br />
 
-Summary ==>>    name: 'http_request_duration_summary_seconds', 
-                Desc: 'Summary of the duration of HTTP requests in seconds',
-                percentiles: [0.5, 0.9, 0.99] // Define your percentiles here
+Summary ==>>    name: 'http_request_duration_summary_seconds', <br />
+                Desc: 'Summary of the duration of HTTP requests in seconds',<br />
+                percentiles: [0.5, 0.9, 0.99] // Define your percentiles here<br /><br />
 
-// Gauge metric
-Gauge ==>>      name: 'node_gauge_example', 
-                Desc: 'Example of a gauge tracking async task duration'
-
-
+// Gauge metric<br />
+Gauge ==>>      name: 'node_gauge_example', <br />
+                Desc: 'Example of a gauge tracking async task duration'<br /><br /><br /><br /><br />
 
 
 
@@ -34,16 +32,18 @@ Gauge ==>>      name: 'node_gauge_example',
 
 
 
-## 🎛️ Instrumentation
+
+
+## 🎛️ Instrumentation<br />
 - Instrumentation refers to the process of adding monitoring capabilities to your applications, systems, or services.
 - This involves embedding/Writting code or using tools to collect metrics, logs, or traces that provide insights into how the system is performing.
 
-## 🎯 Purpose of Instrumentation:
+## 🎯 Purpose of Instrumentation:<br />
 - **Visibility**: It helps you gain visibility into the internal state of your applications and infrastructure.
 - **Metrics Collection**: By collecting key metrics like CPU usage, memory consumption, request rates, error rates, etc., you can understand the health and performance of your system.
 - **Troubleshooting**: When something goes wrong, instrumentation allows you to diagnose the issue quickly by providing detailed insights.
 
-## ⚙️ How it Works:
+## ⚙️ How it Works:<br />
 - **Code-Level Instrumentation**: You can add instrumentation directly in your application code to expose metrics. For example, in a `Node.js` application, you might use a library like prom-client to expose custom metrics.
 
 ## 📈 Instrumentation in Prometheus:
