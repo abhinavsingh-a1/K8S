@@ -1,26 +1,3 @@
-Navigate to service-a directory. Login to Docker -
-
-<img width="1200" height="203" alt="image" src="https://github.com/user-attachments/assets/c52f2a99-f587-40bf-82d9-8bac6b5b7e6d" />
-
-Build image for service-a -
-
-$ docker build -t a1abhinavsingh/service-a:v1 .
-
-<img width="1906" height="852" alt="image" src="https://github.com/user-attachments/assets/dbe67631-f7df-4846-a33d-548940a610b3" />
-
-Push image to Docker hub for service-a -
-
-<img width="1458" height="84" alt="image" src="https://github.com/user-attachments/assets/ed4f8941-46bf-467b-af22-345e04c890a5" />
-
-Build image for service-b -
-
-$ docker build -t a1abhinavsingh/service-b:v1 .
-
-<img width="1906" height="852" alt="image" src="https://github.com/user-attachments/assets/dbe67631-f7df-4846-a33d-548940a610b3" />
-
-Push image to Docker hub for service-b -
-
-<img width="1458" height="84" alt="image" src="https://github.com/user-attachments/assets/ed4f8941-46bf-467b-af22-345e04c890a5" />
 
 Create namespace -
 
@@ -202,6 +179,36 @@ or use the pre-built images
 - a1abhinavsingh/demoservice-b:v
 
 ```
+
+Navigate to service-a directory. Login to Docker -
+
+<img width="1200" height="203" alt="image" src="https://github.com/user-attachments/assets/c52f2a99-f587-40bf-82d9-8bac6b5b7e6d" />
+
+Build image for service-a -
+
+$ docker build -t a1abhinavsingh/service-a:v1 .
+
+<img width="1906" height="852" alt="image" src="https://github.com/user-attachments/assets/dbe67631-f7df-4846-a33d-548940a610b3" />
+
+Push image to Docker hub for service-a -
+
+<img width="1458" height="84" alt="image" src="https://github.com/user-attachments/assets/ed4f8941-46bf-467b-af22-345e04c890a5" />
+
+Build image for service-b -
+
+$ docker build -t a1abhinavsingh/service-b:v1 .
+
+<img width="1906" height="852" alt="image" src="https://github.com/user-attachments/assets/dbe67631-f7df-4846-a33d-548940a610b3" />
+
+Push image to Docker hub for service-b -
+
+<img width="1458" height="84" alt="image" src="https://github.com/user-attachments/assets/ed4f8941-46bf-467b-af22-345e04c890a5" />
+
+
+
+
+
+
 
 ## 3) Kubernetes manifest
 - Review the Kubernetes manifest files located in `day-4/kubernetes-manifest`.
