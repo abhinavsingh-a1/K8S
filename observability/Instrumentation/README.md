@@ -4,7 +4,7 @@ Below file has explanation of all metrics >>
 Instrumentation >> application >> Service-a >> index.js ==>>
 
 // Prometheus metrics
-Counter ==>>    name: 'http_requests_total', 
+Counter ==>>    name: 'http_requests_total', <br />
                 Desc : 'Total number of HTTP requests'
 
 Histogram ==>>  name: 'http_request_duration_seconds', 
