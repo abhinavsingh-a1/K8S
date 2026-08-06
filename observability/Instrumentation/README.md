@@ -220,8 +220,8 @@ Lets look in to PROMETHEUS -
 ## 5) Configure Alertmanager
 - Review the Alertmanager configuration files located in `instrumentation/alerts-alertmanager-servicemonitor-manifest` but below is the brief overview
     - Before configuring Alertmanager, we need credentials to send emails. For this project, we are using Gmail, but any SMTP provider like AWS SES can be used. so please grab the credentials for that.
-    - Open your Google account settings and search App password & create a new password & put the password in `day-4/alerts-alertmanager-servicemonitor-manifest/email-secret.yml`
-    - One last thing, please add your email id in the `day-4/alerts-alertmanager-servicemonitor-manifest/alertmanagerconfig.yml`
+    - Open your Google account settings and search App password & create a new password & put the password in `instrumentation/alerts-alertmanager-servicemonitor-manifest/email-secret.yml`
+    - One last thing, please add your email id in the `instrumentation/alerts-alertmanager-servicemonitor-manifest/alertmanagerconfig.yml`
 - **HighCpuUsage**: Triggers a warning alert if the average CPU usage across instances exceeds 50% for more than 5 minutes.
 - **PodRestart**: Triggers a critical alert immediately if any pod restarts more than 2 times.
 - Apply the manifest files to your cluster by running:
