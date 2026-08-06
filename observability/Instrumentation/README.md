@@ -1,50 +1,5 @@
 
-Create namespace -
 
-$ kubectl create ns dev
-
-Apply manifest of kubernetes-manifest - 
-
-$ kubectl apply -k kubernetes-manifest/
-
-<img width="1235" height="126" alt="image" src="https://github.com/user-attachments/assets/8003c588-4006-4dec-8d75-5708fbc6da4d" />
-
-Both of the PODs should start running -
-
-<img width="1113" height="101" alt="image" src="https://github.com/user-attachments/assets/a37e6406-6da7-444b-91dc-4d2bde8b5807" />
-
-$ kubectl get svc -n dev
-
-<img width="1084" height="106" alt="image" src="https://github.com/user-attachments/assets/ea3a256d-a470-41d6-9ec8-adf776d9f34f" />
-
-Service A is communicating with Service B internally.
-
-In service external IP will appear in some time. Hit that URL in browser and application will start running-
-
-<img width="1008" height="369" alt="image" src="https://github.com/user-attachments/assets/d6e6c662-9740-45d2-962c-97495f744128" />
-
-It supports many API like -
-/healthy
-/logs
-etc.
-
-<img width="1040" height="297" alt="image" src="https://github.com/user-attachments/assets/58d3f0ca-6af1-4132-819c-e4ab3cab09cb" />
-
-Now lets see the metrics such as http_requests_total is working on prometheus and giving some output -
-
-<img width="733" height="428" alt="image" src="https://github.com/user-attachments/assets/c924f223-c5a9-41d1-a0e6-aed539578f66" />
-
-It is not giging anything because till now service discovery is not enabled. So we have created the prometheus stack but how PROMETHEUS know from which application it has to fetch the cutomer metrics from.
-
-For Service Descovery we have manifest in alerts-alertmanager-servicemonitoring-manifest folder. Just create those.
-
-$ kubectl apply -k alerts-alertmanager-servicemonitoring-manifest/
-
-<img width="868" height="99" alt="image" src="https://github.com/user-attachments/assets/8a5cc097-20bf-4369-8a5b-0072efc266df" />
-
-Lets look in to PROMETHEUS -
-
-<img width="1303" height="880" alt="image" src="https://github.com/user-attachments/assets/15f099b9-893f-4196-a00d-23c7904e5f59" />
 
 
 
@@ -218,6 +173,59 @@ kubectl create ns dev
 
 kubectl apply -k kubernetes-manifest/
 ```
+--------------------------------------------------------------------------------
+Create namespace -
+
+$ kubectl create ns dev
+
+Apply manifest of kubernetes-manifest - 
+
+$ kubectl apply -k kubernetes-manifest/
+
+<img width="1235" height="126" alt="image" src="https://github.com/user-attachments/assets/8003c588-4006-4dec-8d75-5708fbc6da4d" />
+
+Both of the PODs should start running -
+
+<img width="1113" height="101" alt="image" src="https://github.com/user-attachments/assets/a37e6406-6da7-444b-91dc-4d2bde8b5807" />
+
+$ kubectl get svc -n dev
+
+<img width="1084" height="106" alt="image" src="https://github.com/user-attachments/assets/ea3a256d-a470-41d6-9ec8-adf776d9f34f" />
+
+Service A is communicating with Service B internally.
+
+In service external IP will appear in some time. Hit that URL in browser and application will start running-
+
+<img width="1008" height="369" alt="image" src="https://github.com/user-attachments/assets/d6e6c662-9740-45d2-962c-97495f744128" />
+
+It supports many API like -
+/healthy
+/logs
+etc.
+
+<img width="1040" height="297" alt="image" src="https://github.com/user-attachments/assets/58d3f0ca-6af1-4132-819c-e4ab3cab09cb" />
+
+Now lets see the metrics such as http_requests_total is working on prometheus and giving some output -
+
+<img width="733" height="428" alt="image" src="https://github.com/user-attachments/assets/c924f223-c5a9-41d1-a0e6-aed539578f66" />
+
+It is not giging anything because till now service discovery is not enabled. So we have created the prometheus stack but how PROMETHEUS know from which application it has to fetch the cutomer metrics from.
+
+For Service Descovery we have manifest in alerts-alertmanager-servicemonitoring-manifest folder. Just create those.
+
+$ kubectl apply -k alerts-alertmanager-servicemonitoring-manifest/
+
+<img width="868" height="99" alt="image" src="https://github.com/user-attachments/assets/8a5cc097-20bf-4369-8a5b-0072efc266df" />
+
+Lets look in to PROMETHEUS -
+
+<img width="1303" height="880" alt="image" src="https://github.com/user-attachments/assets/15f099b9-893f-4196-a00d-23c7904e5f59" />
+--------------------------------------------------------------------------------
+
+
+
+
+
 
 ## 4) Test all the endpoints
 - Open a browser and get the LoadBalancer DNS name & hit the DNS name with following routes to test the application:
