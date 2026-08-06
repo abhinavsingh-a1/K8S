@@ -76,6 +76,11 @@ etc.
 
 <img width="1040" height="297" alt="image" src="https://github.com/user-attachments/assets/58d3f0ca-6af1-4132-819c-e4ab3cab09cb" />
 
+Now lets see the metrics such as http_requests_total is working on prometheus and giving some output -
+
+<img width="733" height="428" alt="image" src="https://github.com/user-attachments/assets/c924f223-c5a9-41d1-a0e6-aed539578f66" />
+
+It is not giging anything because till now service discovery is not enabled. So we have created the prometheus stack but how PROMETHEUS know from which application it has to fetch the cutomer metrics from.
 
 
 
