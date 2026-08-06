@@ -184,7 +184,7 @@ Now lets see the metrics such as http_requests_total is working on prometheus an
 
 <img width="733" height="428" alt="image" src="https://github.com/user-attachments/assets/c924f223-c5a9-41d1-a0e6-aed539578f66" />
 
-It is not giging anything because till now service discovery is not enabled. So we have created the prometheus stack but how PROMETHEUS know from which application it has to fetch the cutomer metrics from.
+It is not giving anything because till now service discovery is not enabled. So we have created the prometheus stack but how PROMETHEUS know from which application it has to fetch the cutomer metrics from.
 
 For Service Descovery we have manifest in alerts-alertmanager-servicemonitoring-manifest folder. Just create those.
 
