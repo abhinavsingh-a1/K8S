@@ -45,6 +45,27 @@ Push image to Docker hub for service-b -
 
 <img width="1458" height="84" alt="image" src="https://github.com/user-attachments/assets/ed4f8941-46bf-467b-af22-345e04c890a5" />
 
+Create namespace -
+
+$ kubectl create ns dev
+
+Apply manifest of kubernetes-manifest - 
+
+$ kubectl apply -k kubernetes-manifest/
+
+<img width="1235" height="126" alt="image" src="https://github.com/user-attachments/assets/8003c588-4006-4dec-8d75-5708fbc6da4d" />
+
+Both of the PODs should start running -
+
+<img width="1113" height="101" alt="image" src="https://github.com/user-attachments/assets/a37e6406-6da7-444b-91dc-4d2bde8b5807" />
+
+$ kubectl get svc -n dev
+
+<img width="1084" height="106" alt="image" src="https://github.com/user-attachments/assets/ea3a256d-a470-41d6-9ec8-adf776d9f34f" />
+
+Service A is communicating with Service B internally.
+
+
 
 
 
