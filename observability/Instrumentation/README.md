@@ -218,7 +218,7 @@ Lets look in to PROMETHEUS -
 ```
 
 ## 5) Configure Alertmanager
-- Review the Alertmanager configuration files located in `day-4/alerts-alertmanager-servicemonitor-manifest` but below is the brief overview
+- Review the Alertmanager configuration files located in `instrumentation/alerts-alertmanager-servicemonitor-manifest` but below is the brief overview
     - Before configuring Alertmanager, we need credentials to send emails. For this project, we are using Gmail, but any SMTP provider like AWS SES can be used. so please grab the credentials for that.
     - Open your Google account settings and search App password & create a new password & put the password in `day-4/alerts-alertmanager-servicemonitor-manifest/email-secret.yml`
     - One last thing, please add your email id in the `day-4/alerts-alertmanager-servicemonitor-manifest/alertmanagerconfig.yml`
