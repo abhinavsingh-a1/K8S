@@ -20,7 +20,8 @@
 - **Fluentbit**: A lightweight log forwarder that collects logs from different sources and sends them to Elasticsearch.
 - **Kibana**: A visualization tool that allows users to explore and analyze logs stored in Elasticsearch.
 
-<img width="863" height="492" alt="image" src="https://github.com/user-attachments/assets/26a3cf54-2a64-4f4b-8fc1-b6876b2388ff" />
+<img width="863" height="492" alt="image" src="https://github.com/user-attachments/assets/cd18661c-1f13-49fc-bfce-2c2edcd88e8d" />
+
 
 
 # 🏠 Architecture
