@@ -73,6 +73,9 @@ helm repo update
 ```
 
 ### Step 8: Install Jaeger with Custom Values
+
+<img width="756" height="300" alt="image" src="https://github.com/user-attachments/assets/eeb51a79-c68a-470f-af9f-04aab6ee334a" />
+
 - 👉 **Note**: Please update the `password` field and other related field in the `jaeger-values.yaml` file with the password retrieved earlier in day-4 at step 6: (i.e NJyO47UqeYBsoaEU)"
 -  Command installs Jaeger into the tracing namespace using a custom jaeger-values.yaml configuration file. Ensure the password is updated in the file before installation.
 ```bash
