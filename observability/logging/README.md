@@ -101,11 +101,30 @@ helm install kibana --set service.type=LoadBalancer elastic/kibana -n logging
 - 👉 **Note**: Please update the `HTTP_Passwd` field in the `fluentbit-values.yml` file with the password retrieved earlier in step 6: (i.e NJyO47UqeYBsoaEU)"
 <img width="669" height="807" alt="image" src="https://github.com/user-attachments/assets/3cdaa4cc-9bbe-46fb-a589-83bcb72a4b02" />
 
-
 ```bash
 helm repo add fluent https://fluent.github.io/helm-charts
 helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 ```
+
+Lets verify -
+$ kubectl get PODS -n logging
+<img width="947" height="150" alt="image" src="https://github.com/user-attachments/assets/f541c5ee-6743-49b4-980f-ada428a45690" />
+$ kubectl get svc -n logging
+<img width="1913" height="274" alt="image" src="https://github.com/user-attachments/assets/360648bc-051d-410b-b691-5dcbf1e64921" />
+
+Open URL in browser. Provide Base64 encoded password which we copied earlier.
+<img width="764" height="453" alt="image" src="https://github.com/user-attachments/assets/b6530b56-c27c-4863-8138-fa08dfab901e" />
+
+Kibana dashboard will look like below -
+<img width="1211" height="706" alt="image" src="https://github.com/user-attachments/assets/410df224-6046-47a0-92ea-dcb34329a8c3" />
+
+
+
+Once you start getting logs after installing application, go to Kibana dashboard & create dataview -
+<img width="1379" height="869" alt="image" src="https://github.com/user-attachments/assets/88ed83f7-28d4-4901-b6ad-cc719b567d92" />
+
+You can easily see, logs are displayed below -
+<img width="1918" height="931" alt="image" src="https://github.com/user-attachments/assets/2c5bf42a-87c3-4664-a913-b76d2246f073" />
 
 ## ✅ Conclusion
 - We have successfully installed the EFK stack in our Kubernetes cluster, which includes Elasticsearch for storing logs, Fluentbit for collecting and forwarding logs, and Kibana for visualizing logs.
