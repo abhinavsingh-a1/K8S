@@ -114,6 +114,19 @@ Run the Loadbalancer external IP in browser so that there could be some traces r
 
 <img width="900" height="178" alt="image" src="https://github.com/user-attachments/assets/1c99b43b-3566-40d3-af03-f4b384f17610" />
 
+Let's hit the /healthy API -
+
+<img width="1003" height="278" alt="image" src="https://github.com/user-attachments/assets/27611c78-815c-4e61-ad76-9d67f1385531" />
+
+Now go back to Jeager UI in browser & refresh, you will be able to see the service -
+
+<img width="1180" height="698" alt="image" src="https://github.com/user-attachments/assets/114b6de7-8c6f-4494-8810-a2a6357005fc" />
+
+Now select any trace -
+
+<img width="1007" height="465" alt="image" src="https://github.com/user-attachments/assets/d912db41-003d-4ff0-856e-7f8f9e75ab5f" />
+
+You will be able to see the spans.
 
 ## 🧼 Clean Up
 ```bash
