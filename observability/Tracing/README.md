@@ -18,7 +18,8 @@
 - 🔗 **Context Propagation**: For Jaeger to trace requests across services, it needs to propagate context. This means each service in the call chain passes along the trace information to the next service.
 
 # 🏠 Architecture
-![Project Architecture](images/architecture.gif)
+<img width="664" height="864" alt="image" src="https://github.com/user-attachments/assets/559757c0-8981-472c-9a43-5b3203a00081" />
+
 
 
 
