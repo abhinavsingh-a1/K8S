@@ -219,9 +219,29 @@ Lets look in to PROMETHEUS -
 
 ## 5) Configure Alertmanager
 - Review the Alertmanager configuration files located in `instrumentation/alerts-alertmanager-servicemonitor-manifest` but below is the brief overview
-    - Before configuring Alertmanager, we need credentials to send emails. For this project, we are using Gmail, but any SMTP provider like AWS SES can be used. so please grab the credentials for that.
-    - Open your Google account settings and search App password & create a new password & put the password in `instrumentation/alerts-alertmanager-servicemonitor-manifest/email-secret.yml`
-    - One last thing, please add your email id in the `instrumentation/alerts-alertmanager-servicemonitor-manifest/alertmanagerconfig.yml`
+- <img width="407" height="424" alt="image" src="https://github.com/user-attachments/assets/377b4a3e-2600-4866-9af4-d88b7c447734" />
+- In `instrumentation/alerts-alertmanager-servicemonitor-manifest/alertmanagerconfig.yml` file, we provide which alerts we have to configure. Like here we have 2 alerts HttpCpuUsage &  PodRestart.
+- As well we define the receivers also. Here our alert receiver are gmail.
+  
+- Before configuring Alertmanager, we need credentials to send emails. For this project, we are using Gmail, but any SMTP provider like AWS SES can be used. so please grab the credentials for that.
+
+- Go to manage Gmail account -
+ <img width="946" height="590" alt="image" src="https://github.com/user-attachments/assets/e48606e5-730d-4379-bddf-a6470f999ead" />
+ - Search for app Password -
+<img width="965" height="502" alt="image" src="https://github.com/user-attachments/assets/10f116d8-a738-42f3-8d36-ffd957848a9b" />
+ - Provide name as alertmanager -
+<img width="529" height="446" alt="image" src="https://github.com/user-attachments/assets/67cf358b-e703-4092-9e3c-fde49f261f09" />
+- You will get the password.
+- Convert this password to Base64.
+  $ echo "ubub lksm ymnh aaks" | base64
+  <img width="346" height="31" alt="image" src="https://github.com/user-attachments/assets/f37221ac-c09f-4fd0-9de0-1454607b08b3" />
+
+- Open your Google account settings and search App password & create a new password & put the password in `instrumentation/alerts-alertmanager-servicemonitor-manifest/email-secret.yml` as mentioned above.
+<img width="542" height="457" alt="image" src="https://github.com/user-attachments/assets/f5abdfc2-12f7-4a90-9a69-74abd8b3c203" />
+
+- One last thing, please add your email id in the `instrumentation/alerts-alertmanager-servicemonitor-manifest/alertmanagerconfig.yml`
+- <img width="547" height="388" alt="image" src="https://github.com/user-attachments/assets/0004acae-face-442e-a9ab-09165b109c70" />
+
 - **HighCpuUsage**: Triggers a warning alert if the average CPU usage across instances exceeds 50% for more than 5 minutes.
 - **PodRestart**: Triggers a critical alert immediately if any pod restarts more than 2 times.
 - Apply the manifest files to your cluster by running:
@@ -236,6 +256,14 @@ kubectl apply -k alerts-alertmanager-servicemonitor-manifest/
 
 ## 6) Testing Alerts
 - To test the alerting system, manually crash the container more than 2 times to trigger an alert (email notification).
+
 - To crash the application container, hit the following endpoint
 - `<<LOAD_BALANCER_DNS_NAME>>/crash`
+- <img width="739" height="46" alt="image" src="https://github.com/user-attachments/assets/372575f4-1d0b-415d-8c79-a06de9d6b0a7" />
+- Validate that PODS are recreated or not -
+- $ kubectl get pods -n dev
+- <img width="938" height="82" alt="image" src="https://github.com/user-attachments/assets/f86e1a34-e204-465d-a642-c4f4480132d9" />
+- You can see POD is recreated 17s ago.
+
 - You should receive an email once the application container has restarted at least 3 times.
+
