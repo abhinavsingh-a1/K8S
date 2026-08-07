@@ -81,6 +81,10 @@ helm repo update
 ```bash
 helm install jaeger jaegertracing/jaeger -n tracing --values jaeger-values.yaml
 ```
+
+<img width="1921" height="615" alt="image" src="https://github.com/user-attachments/assets/b639439b-58dd-47fb-828d-c201bff7254d" />
+
+
 ### Step 9: Port Forward Jaeger Query Service
 - Command forwards port 8080 on your local machine to the Jaeger Query service, allowing you to access the Jaeger UI locally.
 ```bash
