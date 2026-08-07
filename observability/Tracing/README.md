@@ -100,6 +100,19 @@ Below is UI for Jaeger -
 
 <img width="1244" height="812" alt="image" src="https://github.com/user-attachments/assets/1695f82b-bdb9-4106-a79a-f700b084fe3a" />
 
+Now go to Observability >> Instrumentation >> README.md >> 3) Kubernetes manifest
+
+$ kubectl create ns dev
+
+$ kubectl apply -k kubernetes-manifest/
+
+$ Kubectl get svc -n dev
+
+<img width="1340" height="113" alt="image" src="https://github.com/user-attachments/assets/1c89d0d5-1285-4bb6-9592-0ec3be62c3a4" />
+
+Run the Loadbalancer external IP in browser so that there could be some traces receive in Jeager.
+
+<img width="900" height="178" alt="image" src="https://github.com/user-attachments/assets/1c99b43b-3566-40d3-af03-f4b384f17610" />
 
 
 ## 🧼 Clean Up
