@@ -126,7 +126,31 @@ Now select any trace -
 
 <img width="1007" height="465" alt="image" src="https://github.com/user-attachments/assets/d912db41-003d-4ff0-856e-7f8f9e75ab5f" />
 
-You will be able to see the spans.
+You will be able to see the spans. If you click in any span -
+
+<img width="1916" height="509" alt="image" src="https://github.com/user-attachments/assets/98ed4715-38b2-4d73-98ce-936b7f3baf6f" />
+
+You can expand each span and get information about tracing -
+
+<img width="1917" height="651" alt="image" src="https://github.com/user-attachments/assets/a92f6d48-c805-4ae7-89b5-4f9bd4153b45" />
+
+Now Lets try to call Service-b from service-a -
+
+<img width="1600" height="428" alt="image" src="https://github.com/user-attachments/assets/fb3b035f-0e25-427b-8ecd-ab32b7d268e0" />
+
+When you will go to Jeager, Service will become 2. Click on find traces -
+
+<img width="1919" height="714" alt="image" src="https://github.com/user-attachments/assets/7b0ddb34-808a-4463-94e1-e3eb0cdff4b5" />
+
+You will find that Service-b request came form Service-a -
+
+<img width="1917" height="630" alt="image" src="https://github.com/user-attachments/assets/3be658d1-6bcc-46ff-852d-f48a54b853ab" />
+
+You can see traces -
+
+<img width="1921" height="952" alt="image" src="https://github.com/user-attachments/assets/184773ab-8203-4fc3-9ecb-dac4b7b2856d" />
+
+Problem solved - Service-b was taking huge amount of time or there was lag, with help of traces, find out that particular issue was with some function and developer fix the issue.
 
 ## 🧼 Clean Up
 ```bash
