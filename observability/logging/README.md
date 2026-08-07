@@ -31,6 +31,9 @@
 
 ## 📝 Step-by-Step Setup
 
+<img width="863" height="492" alt="image" src="https://github.com/user-attachments/assets/95cf44b3-7643-4922-8fc8-9b7cdc8f99f5" />
+
+
 ### 1) Create IAM Role for Service Account
 ```bash
 eksctl create iamserviceaccount \
