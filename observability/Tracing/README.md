@@ -37,6 +37,10 @@
 - Query: Provides a UI to view traces.
 - Storage: Stores traces for later retrieval (often a database like *Elasticsearch*).
 
+- <img width="863" height="492" alt="image" src="https://github.com/user-attachments/assets/75a49665-2065-492f-8df1-bd13be3541f1" />
+
+
+Go to logging >> README.md & execute Step 1 to Step 6. Store User name & password with you somewhere. This information will be used in Jaeger installation.
 
 ### Step 3: Export Elasticsearch CA Certificate
 - This command retrieves the CA certificate from the Elasticsearch master certificate secret and decodes it, saving it to a ca-cert.pem file.
