@@ -142,6 +142,7 @@ Port 9200<br />
 HTTP_User elastic<br />
 HTTP_Passwd cbTQj1qxRIPNF5uc<br />
 <br />
+If you are running on EKS cluster, then make sure TLS is ON otherwise connection will not establish.
 
 ## ✅ Conclusion
 - We have successfully installed the EFK stack in our Kubernetes cluster, which includes Elasticsearch for storing logs, Fluentbit for collecting and forwarding logs, and Kibana for visualizing logs.
