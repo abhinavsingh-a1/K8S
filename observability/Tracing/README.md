@@ -96,6 +96,12 @@ kubectl port-forward svc/jaeger-query 8080:80 -n tracing
 
 ```
 
+Below is UI for Jaeger -
+
+<img width="1244" height="812" alt="image" src="https://github.com/user-attachments/assets/1695f82b-bdb9-4106-a79a-f700b084fe3a" />
+
+
+
 ## 🧼 Clean Up
 ```bash
 
