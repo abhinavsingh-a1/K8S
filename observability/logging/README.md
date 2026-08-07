@@ -9,7 +9,7 @@
 - **Security**: Logs help in detecting unauthorized access or malicious activities.
 
 ## 🛠️ Tools Available for Logging in Kubernetes
-- 🗂️ EFK Stack (Elasticsearch, Fluentbit, Kibana)
+- 🗂️ EFK Stack (Elasticsearch, Fluentbit(deployed as deamon set: deployed at each node of cluster), Kibana)
 - 🗂️ EFK Stack (Elasticsearch, FluentD, Kibana)
 - 🗂️ ELK Stack (Elasticsearch, Logstash, Kibana)
 - 📊 Promtail + Loki + Grafana
@@ -20,8 +20,12 @@
 - **Fluentbit**: A lightweight log forwarder that collects logs from different sources and sends them to Elasticsearch.
 - **Kibana**: A visualization tool that allows users to explore and analyze logs stored in Elasticsearch.
 
+<img width="863" height="492" alt="image" src="https://github.com/user-attachments/assets/26a3cf54-2a64-4f4b-8fc1-b6876b2388ff" />
+
+
 # 🏠 Architecture
-![Project Architecture](images/architecture.gif)
+<img width="660" height="860" alt="image" src="https://github.com/user-attachments/assets/fbd3d166-1632-4435-8c1f-8d38decc8418" />
+
 
 
 ## 📝 Step-by-Step Setup
