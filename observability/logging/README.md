@@ -126,14 +126,29 @@ Once you start getting logs after installing application, go to Kibana dashboard
 You can easily see, logs are displayed below -
 <img width="1918" height="931" alt="image" src="https://github.com/user-attachments/assets/2c5bf42a-87c3-4664-a913-b76d2246f073" />
 
+Lets have a look at fluentbit_values.yml file -
+- First part is service in which we define, it is ClusterIP, NodePort, LoadBalancer with it PORT.
+- <img width="650" height="540" alt="image" src="https://github.com/user-attachments/assets/d47cde26-1df0-42e2-b3d6-984224d0df2d" />
+- Next thing is INPUT, from where INPUT is coming from. In our case input is coming from all the containers -
+- <img width="616" height="482" alt="image" src="https://github.com/user-attachments/assets/1bddc696-eb51-4e64-b726-06e6a6cd4584" />
+- Next we can see filter are set. Here we have used LUA script in which we have ignored logging namespace logs -
+- <img width="610" height="484" alt="image" src="https://github.com/user-attachments/assets/28462b04-0a4d-4fed-ba94-e33b6e6d2fed" />
+- LUA script is written here -
+- <img width="1092" height="729" alt="image" src="https://github.com/user-attachments/assets/fe0a4a2d-06e0-4ece-8faa-13362bd1617a" />
+- Finally OUTPUT where logs will be forwarded -
+- <img width="760" height="804" alt="image" src="https://github.com/user-attachments/assets/1f48fe22-ed91-47d7-abc3-4ce661a3b72c" /><br />
+Host elasticsearch-master <br />
+Port 9200<br />
+HTTP_User elastic<br />
+HTTP_Passwd cbTQj1qxRIPNF5uc<br />
+<br />
+
 ## ✅ Conclusion
 - We have successfully installed the EFK stack in our Kubernetes cluster, which includes Elasticsearch for storing logs, Fluentbit for collecting and forwarding logs, and Kibana for visualizing logs.
 - To verify the setup, access the Kibana dashboard by entering the `LoadBalancer DNS name followed by :5601 in your browser.
     - `http://LOAD_BALANCER_DNS_NAME:5601`
 - Use the username and password retrieved in step 6 to log in.
 - Once logged in, create a new data view in Kibana and explore the logs collected from your Kubernetes cluster.
-
-
 
 ## 🧼 Clean Up
 ```bash
