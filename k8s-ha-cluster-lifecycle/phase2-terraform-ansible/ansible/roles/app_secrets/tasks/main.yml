@@ -1,0 +1,34 @@
+---
+# Secrets go from Ansible Vault -> Kubernetes Secret (encrypted in etcd).
+# They are sent to kubectl on stdin, so no secret file is left on disk.
+
+- name: Secret django-secrets (DJANGO_SECRET_KEY from vault)
+  ansible.builtin.command:
+    cmd: kubectl -n {{ app_namespace }} apply -f -
+    stdin: "{{ lookup('ansible.builtin.template', 'django-secrets.yaml.j2') }}"
+  register: app_secrets_django
+  changed_when: "'unchanged' not in app_secrets_django.stdout"
+  no_log: "{{ hide_secrets }}"
+
+- name: Image pull secret for Docker Hub (only if credentials are in vault)
+  when: registry_username | length > 0
+  block:
+    - name: Secret regcred (type kubernetes.io/dockerconfigjson)
+      ansible.builtin.command:
+        cmd: kubectl -n {{ app_namespace }} apply -f -
+        stdin: "{{ lookup('ansible.builtin.template', 'regcred.yaml.j2') }}"
+      register: app_secrets_regcred
+      changed_when: "'unchanged' not in app_secrets_regcred.stdout"
+      no_log: "{{ hide_secrets }}"
+
+    - name: Default service account uses regcred for every pod
+      ansible.builtin.command: >-
+        kubectl -n {{ app_namespace }} patch serviceaccount default
+        -p '{"imagePullSecrets":[{"name":"regcred"}]}'
+      register: app_secrets_sa
+      changed_when: "'no change' not in app_secrets_sa.stdout"
+
+# Pods read envFrom secrets only at start: restart them when the secret changed.
+- name: Remember whether pods must restart
+  ansible.builtin.set_fact:
+    app_secrets_changed: "{{ app_secrets_django is changed }}"

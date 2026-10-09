@@ -1,0 +1,14 @@
+# Managed by Ansible (role etcd_encryption). Key comes from Ansible Vault.
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - secrets
+    providers:
+      # First provider = used to WRITE. secretbox = XSalsa20-Poly1305.
+      - secretbox:
+          keys:
+            - name: key1
+              secret: {{ etcd_encryption_key }}
+      # Fallback to READ secrets written before encryption was enabled.
+      - identity: {}

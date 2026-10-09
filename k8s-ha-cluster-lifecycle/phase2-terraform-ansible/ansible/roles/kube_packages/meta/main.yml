@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: kube_packages
+  description: "Step 4: kubelet/kubeadm/kubectl/cri-tools from pkgs.k8s.io, held; kubelet node IP and zone labels"
+  author: platform-team
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions: [noble]
+dependencies: []

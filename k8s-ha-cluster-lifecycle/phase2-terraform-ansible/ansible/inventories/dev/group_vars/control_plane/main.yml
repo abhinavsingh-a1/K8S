@@ -1,0 +1,5 @@
+---
+# Only for hosts in the control_plane group.
+encryption_config_dir: /etc/kubernetes/enc
+encryption_config_file: /etc/kubernetes/enc/encryption-config.yaml
+kubeadm_config_file: /etc/kubernetes/kubeadm-config.yaml

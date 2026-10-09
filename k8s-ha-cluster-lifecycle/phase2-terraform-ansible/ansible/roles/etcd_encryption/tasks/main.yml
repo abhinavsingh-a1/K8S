@@ -1,0 +1,20 @@
+---
+# Kubernetes Secrets are stored in etcd. By default they are only base64
+# encoded. This config makes the API server encrypt them with a key that
+# comes from Ansible Vault. Same file on every control plane.
+- name: Encryption config directory
+  ansible.builtin.file:
+    path: "{{ encryption_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: EncryptionConfiguration (key from vault)
+  ansible.builtin.template:
+    src: encryption-config.yaml.j2
+    dest: "{{ encryption_config_file }}"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: "{{ hide_secrets }}"

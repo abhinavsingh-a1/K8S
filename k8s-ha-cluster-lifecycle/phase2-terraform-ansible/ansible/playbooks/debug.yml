@@ -1,0 +1,35 @@
+# Cluster health report.  ansible-playbook playbooks/debug.yml
+- name: Node-level checks on every node
+  hosts: k8s_cluster
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Service states
+      ansible.builtin.command: systemctl is-active kubelet containerd
+      register: svc
+      changed_when: false
+      failed_when: false
+
+    - name: Report
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: kubelet={{ svc.stdout_lines[0] | default('?') }} containerd={{ svc.stdout_lines[1] | default('?') }}"
+
+- name: Cluster-level checks
+  hosts: control_plane[0]
+  gather_facts: false
+  tasks:
+    - name: Collect
+      ansible.builtin.shell: |
+        echo "=== nodes";        kubectl get nodes -o wide -L topology.kubernetes.io/zone
+        echo "=== not running";  kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded
+        echo "=== app pods";     kubectl get pods -l app=sample-python-app -o wide
+        echo "=== endpoints";    kubectl get endpointslices -l kubernetes.io/service-name=python-django-sample-app
+        echo "=== ingress";      kubectl get ingress; kubectl -n ingress-nginx get pods -o wide
+        echo "=== pdb";          kubectl get pdb
+        echo "=== warnings";     kubectl get events -A --field-selector type=Warning --sort-by=.metadata.creationTimestamp | tail -15
+      register: report
+      changed_when: false
+
+    - name: Report
+      ansible.builtin.debug:
+        var: report.stdout_lines

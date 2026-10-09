@@ -1,0 +1,6 @@
+---
+kube_packages:
+  - kubelet
+  - kubeadm
+  - kubectl
+  - cri-tools

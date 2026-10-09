@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: app_secrets
+  description: "Step 6: Kubernetes Secrets from Ansible Vault (no_log)"
+  author: platform-team
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions: [noble]
+dependencies: []

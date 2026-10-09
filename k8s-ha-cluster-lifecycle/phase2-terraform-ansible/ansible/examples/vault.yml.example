@@ -1,0 +1,24 @@
+---
+# PLAINTEXT TEMPLATE - never commit real values in this form.
+# `scripts/run.sh vault-init` generates real values and writes them
+# ENCRYPTED to inventories/dev/group_vars/all/vault.yml.
+#
+# Manual alternative:
+#   cp examples/vault.yml.example inventories/dev/group_vars/all/vault.yml
+#   (fill in values)
+#   ansible-vault encrypt --encrypt-vault-id dev inventories/dev/group_vars/all/vault.yml
+#
+# View / edit later:
+#   ansible-vault view inventories/dev/group_vars/all/vault.yml
+#   ansible-vault edit inventories/dev/group_vars/all/vault.yml
+
+# Django SECRET_KEY -> Kubernetes Secret "django-secrets"
+vault_django_secret_key: "change-me-50-random-characters"
+
+# 32 random bytes, base64. Encrypts Kubernetes Secrets inside etcd.
+#   head -c 32 /dev/urandom | base64
+vault_etcd_encryption_key: "change-me-base64-32-bytes"
+
+# Optional Docker Hub credentials (pull secret; avoids anonymous rate limits)
+vault_registry_username: ""
+vault_registry_password: ""

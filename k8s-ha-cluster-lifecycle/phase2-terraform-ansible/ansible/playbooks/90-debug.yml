@@ -1,0 +1,60 @@
+---
+# Health report:  ansible-playbook playbooks/90-debug.yml
+- name: Node services
+  hosts: k8s_cluster
+  become: true
+  gather_facts: false
+  tasks:
+    - name: kubelet and containerd state
+      ansible.builtin.command: systemctl is-active kubelet containerd
+      register: debug_svc
+      changed_when: false
+      failed_when: false
+
+    - name: Report
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} ({{ node_az }}): kubelet={{ debug_svc.stdout_lines[0] | default('?') }} containerd={{ debug_svc.stdout_lines[1] | default('?') }}"
+
+- name: Cluster report
+  hosts: control_plane_bootstrap
+  gather_facts: false
+  tasks:
+    - name: Collect
+      ansible.builtin.shell: |
+        echo "=== nodes";        kubectl get nodes -o wide -L topology.kubernetes.io/zone
+        echo "=== not running";  kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded
+        echo "=== app pods";     kubectl get pods -l app=sample-python-app -o wide
+        echo "=== endpoints";    kubectl get endpointslices -l kubernetes.io/service-name=python-django-sample-app
+        echo "=== secrets";      kubectl get secrets -l managed-by=ansible
+        echo "=== ingress";      kubectl get ingress; kubectl -n ingress-nginx get pods -o wide
+        echo "=== pdb";          kubectl get pdb
+        echo "=== warnings";     kubectl get events -A --field-selector type=Warning --sort-by=.metadata.creationTimestamp | tail -15
+      register: debug_report
+      changed_when: false
+
+    - name: Report
+      ansible.builtin.debug:
+        var: debug_report.stdout_lines
+
+    # Proof that Secrets are encrypted at rest: the raw etcd value must start
+    # with k8s:enc:secretbox:v1:key1 instead of readable text.
+    - name: Read django-secrets directly from etcd
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        ETCDCTL_API=3 crictl exec $(crictl ps --name etcd -q | head -1) etcdctl \
+          --endpoints=https://127.0.0.1:2379 \
+          --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+          --cert=/etc/kubernetes/pki/etcd/server.crt \
+          --key=/etc/kubernetes/pki/etcd/server.key \
+          get /registry/secrets/{{ app_namespace }}/django-secrets --print-value-only | head -c 32
+      args:
+        executable: /bin/bash
+      register: debug_etcd_raw
+      changed_when: false
+
+    - name: Encryption at rest
+      ansible.builtin.debug:
+        msg: >-
+          {{ 'ENCRYPTED (' ~ (debug_etcd_raw.stdout | regex_search('k8s:enc:[a-z]+:v1:[a-z0-9]+')) ~ ')'
+             if 'k8s:enc:' in debug_etcd_raw.stdout else 'NOT ENCRYPTED - check the API server flags' }}

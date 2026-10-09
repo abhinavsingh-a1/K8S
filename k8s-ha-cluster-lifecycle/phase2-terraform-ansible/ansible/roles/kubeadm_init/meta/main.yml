@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: kubeadm_init
+  description: "Step 5: kubeadm init on the bootstrap control plane; publishes join material"
+  author: platform-team
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions: [noble]
+dependencies: []

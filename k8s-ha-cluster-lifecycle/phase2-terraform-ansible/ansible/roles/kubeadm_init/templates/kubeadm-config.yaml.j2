@@ -1,0 +1,32 @@
+# Managed by Ansible (role kubeadm_init).
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: {{ private_ip }}
+  bindPort: 6443
+nodeRegistration:
+  criSocket: unix:///run/containerd/containerd.sock
+# A new NLB target needs 30-90 s to turn healthy; give API calls more time
+timeouts:
+  kubernetesAPICall: 5m0s
+---
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: ClusterConfiguration
+kubernetesVersion: {{ kubeadm_version.stdout | trim }}
+# Every node and kubectl reach the API through the NLB -> any control plane can fail
+controlPlaneEndpoint: "{{ api_endpoint }}:6443"
+networking:
+  podSubnet: {{ pod_cidr }}
+apiServer:
+  certSANs:
+    - "{{ api_endpoint }}"
+  extraArgs:
+    # Encrypt Secrets in etcd (file written by role etcd_encryption)
+    - name: encryption-provider-config
+      value: {{ encryption_config_file }}
+  extraVolumes:
+    - name: encryption-config
+      hostPath: {{ encryption_config_dir }}
+      mountPath: {{ encryption_config_dir }}
+      readOnly: true
+      pathType: DirectoryOrCreate

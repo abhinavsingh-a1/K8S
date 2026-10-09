@@ -1,0 +1,50 @@
+---
+# Fail fast, before touching any server, if inputs are missing.
+- name: Preflight checks (runs on your machine)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Terraform hand-off file exists (terraform apply was run)
+      ansible.builtin.assert:
+        that:
+          - api_endpoint is defined
+          - api_endpoint | length > 0
+        fail_msg: "api_endpoint missing - run terraform apply (it writes group_vars/all/terraform.yml)"
+
+    - name: Vault secrets are present and decryptable
+      ansible.builtin.assert:
+        that:
+          - vault_django_secret_key is defined
+          - vault_etcd_encryption_key is defined
+          # 32 bytes in base64 = 43 characters + one '='
+          - vault_etcd_encryption_key is match('^[A-Za-z0-9+/]{43}=$')
+        fail_msg: "vault.yml missing/invalid - run scripts/run.sh vault-init"
+      no_log: "{{ hide_secrets }}"
+
+    - name: Dynamic inventory found the expected hosts
+      ansible.builtin.assert:
+        that:
+          - groups['control_plane_bootstrap'] | default([]) | length == 1
+          - groups['control_plane'] | default([]) | length is odd
+          - groups['workers'] | default([]) | length >= 1
+        fail_msg: >-
+          Inventory looks wrong: {{ groups | dict2items | selectattr('key', 'in', ['control_plane', 'workers', 'control_plane_bootstrap']) | items2dict }}.
+          Check: ansible-inventory --graph
+
+    - name: SSH key fetched from Secrets Manager
+      ansible.builtin.stat:
+        path: "{{ ansible_ssh_private_key_file | expanduser }}"
+      register: key_file
+
+    - name: SSH key present
+      ansible.builtin.assert:
+        that: key_file.stat.exists
+        fail_msg: "Run scripts/run.sh fetch-key"
+
+    - name: Wait until every node accepts SSH
+      ansible.builtin.wait_for:
+        host: "{{ hostvars[item].ansible_host }}"
+        port: 22
+        timeout: 300
+      loop: "{{ groups['k8s_cluster'] }}"

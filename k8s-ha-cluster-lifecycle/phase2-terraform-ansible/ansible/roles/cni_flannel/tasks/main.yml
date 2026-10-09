@@ -1,0 +1,11 @@
+---
+- name: Install Flannel (pod network {{ pod_cidr }})
+  become: false
+  ansible.builtin.command: "kubectl apply -f {{ flannel_manifest }}"
+  register: cni_flannel_apply
+  changed_when: "'created' in cni_flannel_apply.stdout or 'configured' in cni_flannel_apply.stdout"
+
+- name: Wait for Flannel
+  become: false
+  ansible.builtin.command: kubectl -n kube-flannel rollout status daemonset/kube-flannel-ds --timeout=180s
+  changed_when: false

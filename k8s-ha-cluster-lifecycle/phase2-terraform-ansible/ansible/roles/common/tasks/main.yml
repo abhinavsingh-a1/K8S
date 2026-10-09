@@ -1,0 +1,152 @@
+# Same as phase1 node/prepare-node.sh, written as idempotent Ansible tasks.
+
+- name: Set hostname (becomes the Kubernetes node name)
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Disable swap now
+  ansible.builtin.command: swapoff -a
+  changed_when: false
+
+- name: Disable swap on reboot
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*\sswap\s.*)$'
+    replace: '# \1'
+
+- name: Kernel modules to load at boot
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      overlay
+      br_netfilter
+    mode: "0644"
+
+- name: Load kernel modules now
+  ansible.builtin.command: "modprobe {{ item }}"
+  loop: [overlay, br_netfilter]
+  changed_when: false
+
+- name: Kernel network settings for Kubernetes
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/k8s.conf
+    content: |
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.ipv4.ip_forward                 = 1
+    mode: "0644"
+  register: sysctl_conf
+
+- name: Apply sysctl settings
+  ansible.builtin.command: sysctl --system
+  when: sysctl_conf.changed
+  changed_when: true
+
+- name: Install containerd and repository tools
+  ansible.builtin.apt:
+    name: [containerd, apt-transport-https, ca-certificates, curl, gpg]
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create /etc/containerd
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: "0755"
+
+- name: Generate default containerd config (first run only)
+  ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+
+- name: Use the systemd cgroup driver (must match kubelet)
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: 'SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+  notify: Restart containerd
+
+- name: Point crictl at containerd
+  ansible.builtin.copy:
+    dest: /etc/crictl.yaml
+    content: |
+      runtime-endpoint: unix:///run/containerd/containerd.sock
+      image-endpoint: unix:///run/containerd/containerd.sock
+    mode: "0644"
+
+- name: Start containerd
+  ansible.builtin.systemd:
+    name: containerd
+    state: started
+    enabled: true
+
+- name: Apply containerd config before kubeadm runs
+  ansible.builtin.meta: flush_handlers
+
+- name: Create apt keyring directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Download the Kubernetes repository key
+  ansible.builtin.get_url:
+    url: "https://pkgs.k8s.io/core:/stable:/{{ k8s_minor }}/deb/Release.key"
+    dest: "/etc/apt/keyrings/kubernetes-{{ k8s_minor }}.asc"
+    mode: "0644"
+
+- name: Add the Kubernetes apt repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    content: "deb [signed-by=/etc/apt/keyrings/kubernetes-{{ k8s_minor }}.asc] https://pkgs.k8s.io/core:/stable:/{{ k8s_minor }}/deb/ /\n"
+    mode: "0644"
+  register: k8s_repo
+
+- name: Install kubelet, kubeadm, kubectl, cri-tools
+  ansible.builtin.apt:
+    name: [kubelet, kubeadm, kubectl, cri-tools]
+    state: present
+    update_cache: "{{ k8s_repo.changed }}"
+
+- name: Hold Kubernetes packages (upgrade them deliberately with kubeadm upgrade)
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop: [kubelet, kubeadm, kubectl, cri-tools]
+
+- name: Get an IMDSv2 token
+  ansible.builtin.uri:
+    url: http://169.254.169.254/latest/api/token
+    method: PUT
+    headers:
+      X-aws-ec2-metadata-token-ttl-seconds: "300"
+    return_content: true
+  register: imds_token
+
+- name: Read availability zone and instance type from instance metadata
+  ansible.builtin.uri:
+    url: "http://169.254.169.254/latest/meta-data/{{ item }}"
+    headers:
+      X-aws-ec2-metadata-token: "{{ imds_token.content }}"
+    return_content: true
+  loop: [placement/availability-zone, placement/region, instance-type]
+  register: imds
+
+- name: Label the node with its zone via kubelet (no cloud provider sets it on kubeadm)
+  ansible.builtin.copy:
+    dest: /etc/default/kubelet
+    content: >-
+      KUBELET_EXTRA_ARGS="--node-ip={{ private_ip }}
+      --node-labels=topology.kubernetes.io/zone={{ imds.results[0].content }},topology.kubernetes.io/region={{ imds.results[1].content }},node.kubernetes.io/instance-type={{ imds.results[2].content }}"
+    mode: "0644"
+  notify: Restart kubelet
+
+- name: Enable kubelet (it restarts in a loop until kubeadm init/join - expected)
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true
+
+- name: Verify crictl can talk to containerd
+  ansible.builtin.command: crictl info
+  changed_when: false

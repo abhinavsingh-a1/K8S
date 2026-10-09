@@ -1,0 +1,18 @@
+---
+# Step 4 - every node: OS settings, container runtime, Kubernetes packages.
+- name: Step 4 - prepare all nodes
+  hosts: k8s_cluster
+  become: true
+  gather_facts: true
+  roles:
+    - os_prereqs
+    - containerd
+    - kube_packages
+
+# Must exist BEFORE kubeadm init/join: the API server reads it at start.
+- name: Step 4 - etcd encryption config on control planes
+  hosts: control_plane
+  become: true
+  gather_facts: false
+  roles:
+    - etcd_encryption

@@ -1,0 +1,52 @@
+---
+- name: Create apt keyring directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Kubernetes repository key
+  ansible.builtin.get_url:
+    url: "https://pkgs.k8s.io/core:/stable:/{{ k8s_minor }}/deb/Release.key"
+    dest: "/etc/apt/keyrings/kubernetes-{{ k8s_minor }}.asc"
+    mode: "0644"
+
+- name: Kubernetes apt repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    content: "deb [signed-by=/etc/apt/keyrings/kubernetes-{{ k8s_minor }}.asc] https://pkgs.k8s.io/core:/stable:/{{ k8s_minor }}/deb/ /\n"
+    mode: "0644"
+  register: k8s_repo
+
+- name: Install kubelet, kubeadm, kubectl, cri-tools
+  ansible.builtin.apt:
+    name: "{{ kube_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ 0 if k8s_repo.changed else 3600 }}"
+
+- name: Hold the packages (upgrade deliberately with kubeadm upgrade)
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop: "{{ kube_packages }}"
+
+# Zone/region/instance-type come from the dynamic inventory (EC2 API),
+# no metadata calls needed. kubeadm has no cloud provider to set them.
+- name: kubelet extra args (node IP + topology labels)
+  ansible.builtin.copy:
+    dest: /etc/default/kubelet
+    content: >-
+      KUBELET_EXTRA_ARGS="--node-ip={{ private_ip }}
+      --node-labels=topology.kubernetes.io/zone={{ node_az }},topology.kubernetes.io/region={{ aws_region }},node.kubernetes.io/instance-type={{ node_instance_type }}"
+    mode: "0644"
+  notify: Restart kubelet
+
+- name: Enable kubelet (crash-loops until kubeadm init/join - expected)
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true
+
+- name: crictl can reach containerd
+  ansible.builtin.command: crictl info
+  changed_when: false

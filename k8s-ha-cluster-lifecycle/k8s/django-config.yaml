@@ -1,0 +1,12 @@
+# Non-secret Django settings, injected as environment variables.
+# Secrets (DJANGO_SECRET_KEY) live in the Secret "django-secrets":
+#   Phase 1: optional (the app falls back to its built-in dev key)
+#   Phase 2: created by Ansible from Ansible Vault
+#   Phase 3: synced from AWS Secrets Manager by External Secrets Operator
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+data:
+  DJANGO_DEBUG: "False"
+  DJANGO_ALLOWED_HOSTS: "*"

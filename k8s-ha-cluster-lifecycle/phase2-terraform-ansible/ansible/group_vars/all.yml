@@ -1,0 +1,13 @@
+# Software versions and cluster settings shared by all roles.
+k8s_minor: v1.35                         # pkgs.k8s.io/core:/stable:/v1.35
+pod_cidr: 10.244.0.0/16                  # required by Flannel
+flannel_manifest: https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+ingress_nginx_version: controller-v1.13.0
+ingress_controller_replicas: 2
+
+app_host: foo.bar.com
+# Shared manifests at the repository root (k8s-ha-project/k8s)
+manifests_src: "{{ playbook_dir }}/../../k8s/"
+manifests_dest: /home/ubuntu/k8s
+
+# api_endpoint and ingress_node_port come from the Terraform-generated inventory.

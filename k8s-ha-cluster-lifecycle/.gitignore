@@ -1,0 +1,19 @@
+# Secrets and generated state - never commit
+*.pem
+**/kubeconfig
+phase1-scripts/state.json
+phase1-scripts/logs/
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+# Python
+**/__pycache__/
+app/devops/venv/
+app/devops/db.sqlite3
+**/backend.hcl
+**/tfplan
+phase2-terraform-ansible/ansible/collections/
+phase2-terraform-ansible/ansible/kubeconfig-*
+phase2-terraform-ansible/ansible/inventories/*/group_vars/all/terraform.yml
+phase3-eks/terraform/live/*/20-platform/terraform.tfvars
+# Commit .terraform.lock.hcl files: they pin provider versions for the whole team.

@@ -1,0 +1,63 @@
+# First control plane: kubeadm init behind the NLB endpoint, Flannel,
+# then publish join commands as facts for the other plays.
+
+- name: Is the cluster already initialised?
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: admin_conf
+
+- name: Wait until the NLB DNS name resolves
+  ansible.builtin.command: "getent hosts {{ api_endpoint }}"
+  register: nlb_dns
+  until: nlb_dns.rc == 0
+  retries: 30
+  delay: 10
+  changed_when: false
+  when: not admin_conf.stat.exists
+
+- name: kubeadm init (HA endpoint = NLB)
+  ansible.builtin.command: >-
+    kubeadm init
+    --control-plane-endpoint {{ api_endpoint }}:6443
+    --apiserver-advertise-address {{ private_ip }}
+    --apiserver-cert-extra-sans {{ api_endpoint }}
+    --pod-network-cidr {{ pod_cidr }}
+    --upload-certs
+  when: not admin_conf.stat.exists
+  register: kubeadm_init
+
+- name: Show kubeadm init output
+  ansible.builtin.debug:
+    var: kubeadm_init.stdout_lines
+  when: kubeadm_init is changed
+
+- name: kubeconfig for the ubuntu user
+  ansible.builtin.include_tasks: "{{ role_path }}/../control_plane_join/tasks/kubeconfig.yml"
+
+- name: Install Flannel
+  become: false
+  ansible.builtin.command: "kubectl apply -f {{ flannel_manifest }}"
+  register: flannel
+  changed_when: "'created' in flannel.stdout or 'configured' in flannel.stdout"
+
+- name: Wait for Flannel on this node
+  become: false
+  ansible.builtin.command: kubectl -n kube-flannel rollout status daemonset/kube-flannel-ds --timeout=180s
+  changed_when: false
+
+- name: Create a join token
+  ansible.builtin.command: kubeadm token create --ttl 4h --print-join-command
+  register: join_cmd
+  changed_when: true
+
+- name: Upload control-plane certificates (key valid 2 hours)
+  ansible.builtin.shell: set -o pipefail && kubeadm init phase upload-certs --upload-certs 2>/dev/null | tail -1
+  args:
+    executable: /bin/bash
+  register: cert_key
+  changed_when: true
+
+- name: Publish join commands for the next plays
+  ansible.builtin.set_fact:
+    join_command: "{{ join_cmd.stdout | trim }}"
+    certificate_key: "{{ cert_key.stdout | trim }}"

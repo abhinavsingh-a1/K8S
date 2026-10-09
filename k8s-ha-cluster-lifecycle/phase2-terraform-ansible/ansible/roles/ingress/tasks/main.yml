@@ -1,0 +1,48 @@
+- name: Install ingress-nginx (bare-metal = NodePort Service)
+  ansible.builtin.command: >-
+    kubectl apply -f
+    https://raw.githubusercontent.com/kubernetes/ingress-nginx/{{ ingress_nginx_version }}/deploy/static/provider/baremetal/deploy.yaml
+  register: ingress_install
+  changed_when: "'created' in ingress_install.stdout or 'configured' in ingress_install.stdout"
+
+- name: Fix the HTTP NodePort (the NLB forwards port 80 to it)
+  ansible.builtin.command: >-
+    kubectl -n ingress-nginx patch svc ingress-nginx-controller --type=json
+    -p='[{"op":"replace","path":"/spec/ports/0/nodePort","value":{{ ingress_node_port }}}]'
+  register: patch
+  changed_when: "'no change' not in patch.stdout"
+
+- name: Run several controller replicas (survive a node failure)
+  ansible.builtin.command: >-
+    kubectl -n ingress-nginx scale deployment ingress-nginx-controller
+    --replicas={{ ingress_controller_replicas }}
+  changed_when: false
+
+- name: Wait for the controller
+  ansible.builtin.command: kubectl -n ingress-nginx rollout status deployment/ingress-nginx-controller --timeout=300s
+  changed_when: false
+
+- name: Apply the app Ingress (retry while the admission webhook starts)
+  ansible.builtin.command: "kubectl apply -f {{ manifests_dest }}/ingress.yaml"
+  register: ing
+  until: ing.rc == 0
+  retries: 12
+  delay: 10
+  changed_when: "'unchanged' not in ing.stdout"
+
+- name: Test through the Ingress on this node
+  ansible.builtin.uri:
+    url: "http://localhost:{{ ingress_node_port }}/demo/"
+    headers:
+      Host: "{{ app_host }}"
+    status_code: 200
+  register: ingress_test
+  until: ingress_test.status == 200
+  retries: 12
+  delay: 5
+
+- name: How to reach the app
+  ansible.builtin.debug:
+    msg:
+      - "curl -H 'Host: {{ app_host }}' http://{{ api_endpoint }}/demo/"
+      - "Browser: map {{ app_host }} to an IP of {{ api_endpoint }} in your hosts file, open http://{{ app_host }}/demo/"

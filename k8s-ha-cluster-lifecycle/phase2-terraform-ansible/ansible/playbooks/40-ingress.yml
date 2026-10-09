@@ -1,0 +1,7 @@
+---
+# Step 7 - NGINX Ingress controller and the app's Ingress.
+- name: Step 7 - ingress
+  hosts: control_plane_bootstrap
+  gather_facts: false
+  roles:
+    - ingress_nginx

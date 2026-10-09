@@ -1,0 +1,8 @@
+---
+# Step 6 - secrets first, then the application.
+- name: Step 6 - application secrets and deployment
+  hosts: control_plane_bootstrap
+  gather_facts: false
+  roles:
+    - app_secrets
+    - app_deploy

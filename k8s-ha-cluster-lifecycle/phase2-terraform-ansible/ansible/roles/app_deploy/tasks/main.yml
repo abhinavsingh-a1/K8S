@@ -1,0 +1,35 @@
+---
+- name: Copy shared manifests (k8s/ at the repository root)
+  ansible.builtin.copy:
+    src: "{{ manifests_src }}"
+    dest: "{{ manifests_dest }}/"
+    mode: "0644"
+
+- name: Apply manifests
+  ansible.builtin.command: "kubectl -n {{ app_namespace }} apply -f {{ manifests_dest }}/{{ item }}"
+  loop: "{{ app_manifests }}"
+  register: app_deploy_apply
+  changed_when: "'unchanged' not in app_deploy_apply.stdout"
+
+- name: Restart pods so they pick up a changed secret
+  ansible.builtin.command: "kubectl -n {{ app_namespace }} rollout restart deployment/sample-python-app"
+  when: app_secrets_changed | default(false) | bool
+  changed_when: true
+
+- name: Wait for the rollout
+  ansible.builtin.command: "kubectl -n {{ app_namespace }} rollout status deployment/sample-python-app --timeout=300s"
+  changed_when: false
+
+- name: Pods and their nodes
+  ansible.builtin.command: "kubectl -n {{ app_namespace }} get pods -l app=sample-python-app -o wide"
+  register: app_deploy_pods
+  changed_when: false
+
+- name: Show pods
+  ansible.builtin.debug:
+    var: app_deploy_pods.stdout_lines
+
+- name: The app answers on the NodePort
+  ansible.builtin.uri:
+    url: http://localhost:30007/demo/
+    status_code: 200

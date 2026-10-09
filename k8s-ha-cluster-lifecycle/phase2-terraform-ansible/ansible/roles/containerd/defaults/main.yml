@@ -1,0 +1,2 @@
+---
+containerd_socket: /run/containerd/containerd.sock

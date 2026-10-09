@@ -1,0 +1,22 @@
+---
+# The play runs with serial: 1 - etcd adds one member at a time.
+- name: Already a control plane?
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubeadm_cp_joined
+
+- name: kubeadm join --control-plane
+  vars:
+    bootstrap: "{{ groups['control_plane_bootstrap'][0] }}"
+  ansible.builtin.command: >-
+    {{ hostvars[bootstrap]['join_command'] }}
+    --control-plane
+    --certificate-key {{ hostvars[bootstrap]['certificate_key'] }}
+    --apiserver-advertise-address {{ private_ip }}
+  when: not kubeadm_cp_joined.stat.exists
+  no_log: "{{ hide_secrets }}"
+
+- name: Admin kubeconfig for ubuntu (reuse the task file of kubeadm_init)
+  ansible.builtin.include_role:
+    name: kubeadm_init
+    tasks_from: kubeconfig.yml

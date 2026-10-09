@@ -1,0 +1,30 @@
+# Dynamic inventory: hosts are discovered live from EC2 by their tags, so
+# the inventory can never drift from what Terraform actually created.
+# Test it:  ansible-inventory --graph
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-west-2
+
+filters:
+  tag:Project: k8s-ha
+  tag:Environment: dev
+  instance-state-name: running
+
+# Inventory hostname = Name tag (k8s-ha-dev-cp-1 ...) = Kubernetes node name
+hostnames:
+  - tag:Name
+
+# Extra host variables built from the EC2 API data
+compose:
+  ansible_host: public_ip_address
+  private_ip: private_ip_address
+  node_az: placement.availability_zone
+  node_instance_type: instance_type
+
+# Groups built from tags (set by the Terraform k8s-nodes module)
+groups:
+  k8s_cluster: true
+  control_plane: tags.Role == 'control-plane'
+  workers: tags.Role == 'worker'
+  control_plane_bootstrap: tags.Role == 'control-plane' and tags.Bootstrap == 'true'
+  control_plane_joiners: tags.Role == 'control-plane' and tags.Bootstrap != 'true'

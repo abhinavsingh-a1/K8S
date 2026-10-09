@@ -1,0 +1,43 @@
+---
+- name: Label workers
+  ansible.builtin.command: "kubectl label node {{ item }} node-role.kubernetes.io/worker= --overwrite"
+  loop: "{{ groups['workers'] }}"
+  changed_when: false
+
+- name: Wait until every node is Ready
+  ansible.builtin.command: kubectl wait --for=condition=Ready nodes --all --timeout=300s
+  changed_when: false
+
+- name: Nodes and zones
+  ansible.builtin.command: kubectl get nodes -o wide -L topology.kubernetes.io/zone
+  register: cluster_nodes
+  changed_when: false
+
+- name: Show nodes
+  ansible.builtin.debug:
+    var: cluster_nodes.stdout_lines
+
+- name: etcd members (one per control plane)
+  ansible.builtin.shell: |
+    set -o pipefail
+    POD=$(kubectl -n kube-system get pods -l component=etcd -o jsonpath='{.items[0].metadata.name}')
+    kubectl -n kube-system exec "$POD" -- etcdctl \
+      --endpoints=https://127.0.0.1:2379 \
+      --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+      --cert=/etc/kubernetes/pki/etcd/server.crt \
+      --key=/etc/kubernetes/pki/etcd/server.key \
+      member list -w table
+  args:
+    executable: /bin/bash
+  register: cluster_etcd
+  changed_when: false
+
+- name: Show etcd members
+  ansible.builtin.debug:
+    var: cluster_etcd.stdout_lines
+
+- name: Fetch kubeconfig (server = NLB) to the Ansible machine
+  ansible.builtin.fetch:
+    src: /home/ubuntu/.kube/config
+    dest: "{{ playbook_dir }}/../kubeconfig-{{ env_name }}"
+    flat: true

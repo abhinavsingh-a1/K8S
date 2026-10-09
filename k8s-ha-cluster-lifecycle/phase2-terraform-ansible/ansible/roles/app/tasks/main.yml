@@ -1,0 +1,31 @@
+# Same manifests as minikube and Phase 1 (k8s-ha-project/k8s).
+
+- name: Copy manifests
+  ansible.builtin.copy:
+    src: "{{ manifests_src }}"
+    dest: "{{ manifests_dest }}/"
+    mode: "0644"
+
+- name: Apply ConfigMap, Deployment, PodDisruptionBudget, Service
+  ansible.builtin.command: "kubectl apply -f {{ manifests_dest }}/{{ item }}"
+  loop: [configmap.yaml, deployment.yaml, pdb.yaml, service.yaml]
+  register: apply
+  changed_when: "'unchanged' not in apply.stdout"
+
+- name: Wait for the rollout
+  ansible.builtin.command: kubectl rollout status deployment/sample-python-app --timeout=300s
+  changed_when: false
+
+- name: Where did the pods land?
+  ansible.builtin.command: kubectl get pods -l app=sample-python-app -o wide
+  register: pods
+  changed_when: false
+
+- name: Show pods
+  ansible.builtin.debug:
+    var: pods.stdout_lines
+
+- name: Test the NodePort on this node
+  ansible.builtin.uri:
+    url: http://localhost:30007/demo/
+    status_code: 200

@@ -1,0 +1,9 @@
+---
+# Steps 4-7 in order. Each playbook can also run on its own.
+#   ansible-playbook site.yml
+#   ansible-playbook playbooks/20-app.yml
+- import_playbook: playbooks/00-preflight.yml
+- import_playbook: playbooks/10-node-prereqs.yml
+- import_playbook: playbooks/20-cluster.yml
+- import_playbook: playbooks/30-app.yml
+- import_playbook: playbooks/40-ingress.yml

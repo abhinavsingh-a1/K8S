@@ -1,0 +1,30 @@
+---
+# Step 5 - build the HA cluster.
+- name: Step 5a - kubeadm init on the bootstrap control plane + Flannel
+  hosts: control_plane_bootstrap
+  become: true
+  gather_facts: false
+  roles:
+    - kubeadm_init
+    - cni_flannel
+
+- name: Step 5b - join the other control planes ONE AT A TIME (etcd membership)
+  hosts: control_plane_joiners
+  become: true
+  gather_facts: false
+  serial: 1
+  roles:
+    - kubeadm_join_control_plane
+
+- name: Step 5c - join the workers
+  hosts: workers
+  become: true
+  gather_facts: false
+  roles:
+    - kubeadm_join_worker
+
+- name: Step 5d - labels, readiness, etcd health, kubeconfig
+  hosts: control_plane_bootstrap
+  gather_facts: false
+  roles:
+    - cluster_finalize

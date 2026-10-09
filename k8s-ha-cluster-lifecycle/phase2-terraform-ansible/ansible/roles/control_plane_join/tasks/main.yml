@@ -1,0 +1,23 @@
+# Extra control planes. The play runs with serial: 1.
+
+- name: Already part of the cluster?
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: joined
+
+- name: kubeadm join as control plane
+  ansible.builtin.command: >-
+    {{ hostvars[groups['control_plane'][0]]['join_command'] }}
+    --control-plane
+    --certificate-key {{ hostvars[groups['control_plane'][0]]['certificate_key'] }}
+    --apiserver-advertise-address {{ private_ip }}
+  when: not joined.stat.exists
+  register: cp_join
+
+- name: Show join output
+  ansible.builtin.debug:
+    var: cp_join.stdout_lines
+  when: cp_join is changed
+
+- name: kubeconfig for the ubuntu user
+  ansible.builtin.include_tasks: kubeconfig.yml

@@ -1,0 +1,3 @@
+devops/venv
+devops/db.sqlite3
+**/__pycache__

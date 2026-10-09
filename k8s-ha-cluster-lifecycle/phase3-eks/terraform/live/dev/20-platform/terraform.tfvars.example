@@ -1,0 +1,3 @@
+# scripts/run.sh bootstrap writes terraform.tfvars with the real bucket name.
+state_bucket     = "k8s-ha-eks-tfstate-<account-id>-us-west-2"
+app_client_cidrs = []   # empty = same as the API allow-list (your IP)

@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-python-app
+  labels:
+    app: sample-python-app
+spec:
+  replicas: 3                       # one pod per worker / per zone
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0             # never drop below 3 ready pods during an update
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: sample-python-app
+  template:
+    metadata:
+      labels:
+        app: sample-python-app
+    spec:
+      # Spread pods evenly across availability zones, then across nodes.
+      # Zone labels: set by kubelet --node-labels on kubeadm (phases 1 & 2),
+      # set automatically by AWS on EKS (phase 3).
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app: sample-python-app
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app: sample-python-app
+      containers:
+      - name: python-app
+        image: a1abhinavsingh/python-sample-app-demo:v2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        # Settings from the ConfigMap, secrets from the Secret.
+        # optional: true = the pod still starts if one is missing.
+        envFrom:
+        - configMapRef:
+            name: django-config
+            optional: true
+        - secretRef:
+            name: django-secrets
+            optional: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        # Only send traffic to a pod once Django answers.
+        readinessProbe:
+          httpGet:
+            path: /demo/
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        # Restart the container if Django stops answering.
+        livenessProbe:
+          httpGet:
+            path: /demo/
+            port: 8000
+          initialDelaySeconds: 20
+          periodSeconds: 20
+          failureThreshold: 3
+        volumeMounts:
+        - name: db-connection
+          mountPath: /opt
+      volumes:
+      - name: db-connection
+        configMap:
+          name: test-cm

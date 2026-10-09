@@ -1,0 +1,11 @@
+# Rolling maintenance: `kubectl drain <node>` may evict at most one app pod
+# at a time, so at least 2 of 3 pods keep serving while a node is patched.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: sample-python-app-pdb
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: sample-python-app

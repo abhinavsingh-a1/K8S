@@ -1,0 +1,11 @@
+{%- set auth = (registry_username ~ ':' ~ registry_password) | b64encode -%}
+{%- set config = {'auths': {registry_server: {'username': registry_username, 'password': registry_password, 'auth': auth}}} -%}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: regcred
+  labels:
+    managed-by: ansible
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ config | to_json | b64encode }}

@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: os_prereqs
+  description: "Step 4: swap off, kernel modules, sysctl, base packages"
+  author: platform-team
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions: [noble]
+dependencies: []

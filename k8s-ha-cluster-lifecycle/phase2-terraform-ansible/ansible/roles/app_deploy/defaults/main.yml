@@ -1,0 +1,7 @@
+---
+app_manifests:
+  - configmap.yaml
+  - django-config.yaml
+  - deployment.yaml
+  - pdb.yaml
+  - service.yaml

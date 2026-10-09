@@ -1,0 +1,8 @@
+- name: Already part of the cluster?
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: joined
+
+- name: kubeadm join as worker
+  ansible.builtin.command: "{{ hostvars[groups['control_plane'][0]]['join_command'] }}"
+  when: not joined.stat.exists
